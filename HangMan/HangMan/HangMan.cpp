@@ -7,8 +7,12 @@
 
 using namespace std;
 
-string userGuess;
 
+
+// Hangman game
+
+// Variable for the user guess.
+string userGuess = "";
 
 void printChoice(string word, string guesses) {
 	/*
@@ -69,7 +73,6 @@ int updateGuess(string word, string guess, char guessChar) {
 	if (index[0] == -100) {
 		// If no characters of the guessChar were found in the random word then it will return -1, denoting a bad guess.
 		return -1;
-
 	}
 	// If vector is not replace characters.
 	else {
@@ -91,7 +94,7 @@ array<string, 220> createRandomListWord() {
 	ifstream inputFile;
 	inputFile.open("words.txt");
 	for (int i = 0; i < 220; i++) {
-		// Taking the input from the file putting it into the 
+		// Taking the input from the file putting it into the
 		getline(inputFile, line);
 		// Making the first character lowercase in each word.
 		line[0] = tolower(line[0]);
@@ -109,7 +112,6 @@ array<string, 220> createRandomListWord() {
 //	;
 //}
 
-
 int triesChecker(int output, char userGuess, int turns, string word, string guess, array<string, 7>images) {
 	/*According to if the user got their guess wrong or right the function will print different things*/
 
@@ -121,7 +123,6 @@ int triesChecker(int output, char userGuess, int turns, string word, string gues
 		printChoice(word, guess);
 		// Returns 1 to add to the turns variable
 		return 1;
-
 	}
 	// If the user guess was correct.
 	else {
@@ -132,7 +133,6 @@ int triesChecker(int output, char userGuess, int turns, string word, string gues
 		return 0;
 	}
 }
-
 
 bool ifWon(string guess, string word) {
 	/*
@@ -148,7 +148,6 @@ bool ifWon(string guess, string word) {
 	}
 }
 
-
 int main() {
 	// String containing an array of random words
 	// array<string, 220>words = createRandomListWord();
@@ -160,7 +159,7 @@ int main() {
 	string line = "";
 	// Importing the words from the text and adding them into the array
 	for (int i = 0; i < 218; i++) {
-		// Taking the input from the file putting it into the 
+		// Taking the input from the file putting it into the
 		getline(inputFile, line);
 		// Making the first character lowercase in each word.
 		line[0] = tolower(line[0]);
@@ -173,32 +172,12 @@ int main() {
 	// String of the alphabet
 	string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
-
 	// for (int i = 0 ; i < 220; i++){
 	// 	std::cout << words[i] << "\n";
 	// }
 
-	// Choosing a random index
-	srand(time(NULL));
-	int random_index = rand() % 218 + 1;
-
-	// Choosing the random word and storing userGuess
-	string randomWord = words[random_index];
-	// Making the first character lower case
-	// randomWord[0]
-
-	// string userGuess;
-
-	// Setting up the user guess string, the guessed characters will replace the slashes
-	for (int i = 0; i < randomWord.length(); i++) {
-		userGuess += '/';
-	}
-
-
-	int guess = 0;
 	// Storing the images in the array.
 	array<string, 7>images;
-
 
 	string templine = "";
 	// Looping through 7 images
@@ -219,60 +198,89 @@ int main() {
 	}
 	// Closing the input file
 	inputFile.close();
-	// Introductory statement
-	std::cout << "\nHello! Welcome to Hangman, by Michael Fedotov.\nIn this game you will be asked to guess a letter from the randomly generated word.\nYour previous letters will show up in the console.\nTo win the game you need to guess all the letters in the word within 7 guesses.\nYou lose if you do not guess the word within 7 guesses.\nThe secret word chosen has " << randomWord.length() << " letters.\n";
 
-	// Game variables
 
-	// If the guess was correct or not
-	int guessCorrect = 0;
-	// Stores the user guess
-	char guessChar;
-	// Counts the number of attemps the user had made guessing, 7 is the max.
-	int triesCounter = 1;
-	// Boolean for if the user has won or not.
-	bool won = false;
+	// Main game loop if the user wants to replay the game.
+	while (true) {
+		userGuess = "";
+		// Choosing a random index
+		srand(time(NULL));
+		int random_index = rand() % 218 + 1;
 
-	// Asking the user for their guess
-	std::cout << "\nPlease enter your guess for a letter in the word: ";
-	std::cin >> guessChar;
-	cin.ignore(324, '\n');
+		// Choosing the random word and storing userGuess
+		string randomWord = words[random_index];
+		// Making the first character lower case
+		// randomWord[0]
 
-	// Updating the guess and returning -1 if the user guessed incorrectly or 0 if the user guessed correctly.
-	guessCorrect = updateGuess(randomWord, userGuess, guessChar);
-	triesCounter += triesChecker(guessCorrect, guessChar, triesCounter, randomWord, userGuess, images);
+		// string userGuess;
 
-	// printChoice(randomWord, userGuess);
-
-	// While loop for the only runs for 7 turns. (Turns start at 1)
-	while (triesCounter < 8) {
-		std::cout << "\nPlease enter your guess for a letter in the word: ";
-		std::cin >> guessChar;
-		cin.ignore(324, '\n');
-
-		// Updating the guess and returning -1 if the user guessed incorrectly or 0 if the user guessed correctly.
-		guessCorrect = updateGuess(randomWord, userGuess, guessChar);
-
-		// Checking if the user guessed right or wrong and printing the appropriate messages
-		// Also adds 1 or 0 to the counter of turns depending on if you got the right guess or not.
-		triesCounter += triesChecker(guessCorrect, guessChar, triesCounter, randomWord, userGuess, images);
-
-		// Checking if the user won
-		won = ifWon(userGuess, randomWord);
-		// If the user has won, then the game will stop.
-		if (won){
-			std::cout << "YOU HAVE GUESSED THE WORD CORRECTLY!\nYOU HAVE WON THE GAME!\nTHE WORD TO GUESS WAS: ";
-			std::cout << randomWord << "\nYou took: " << triesCounter << " turns to guess the word.\n";
-			break;
+		// Setting up the user guess string, the guessed characters will replace the slashes
+		for (int i = 0; i < randomWord.length(); i++) {
+			userGuess += '/';
 		}
+
 		
 
-	}
-	// If the user did not win.
-	if (!won) {
-		std::cout << "\n\nYOU DID NOT GUESS THE WORD CORRECTLY IN 7 TRIES\nTHE WORD WAS: " << randomWord;
-	}
 
+
+		// Introductory statement
+		std::cout << "\nHello! Welcome to Hangman.\nIn this game you will be asked to guess a letter from the randomly generated word.\nYour previous letters will show up in the console.\nTo win the game you need to guess all the letters in the word within 7 guesses.\nYou lose if you do not guess the word within 7 guesses.\nThe secret word chosen has " << randomWord.length() << " letters.\n";
+
+		// Game variables
+
+		// If the guess was correct or not
+		int guessCorrect = 0;
+		// Stores the user guess
+		char guessChar = '\0';
+		// Counts the number of attemps the user had made guessing, 7 is the max.
+		int triesCounter = 1;
+		// Boolean for if the user has won or not.
+		bool won = false;
+
+		int guess = 0;
+
+
+
+
+		// While loop for the only runs for 7 turns. (Turns start at 1), where the user plays the game and guesses all the letters
+		while (triesCounter < 8) {
+			std::cout << "\nPlease enter your guess for a letter in the word: ";
+			std::cin >> guessChar;
+			cin.ignore(324, '\n');
+
+			// Updating the guess and returning -1 if the user guessed incorrectly or 0 if the user guessed correctly.
+			guessCorrect = updateGuess(randomWord, userGuess, guessChar);
+
+			// Checking if the user guessed right or wrong and printing the appropriate messages
+			// Also adds 1 or 0 to the counter of turns depending on if you got the right guess or not.
+			triesCounter += triesChecker(guessCorrect, guessChar, triesCounter, randomWord, userGuess, images);
+
+			// Checking if the user won
+			won = ifWon(userGuess, randomWord);
+			// If the user has won, then the game will stop.
+			if (won) {
+				std::cout << "YOU HAVE GUESSED THE WORD CORRECTLY!\nYOU HAVE WON THE GAME!\nTHE WORD TO GUESS WAS: ";
+				std::cout << randomWord << "\nYou took: " << triesCounter << " turns to guess the word.\n";
+				break;
+			}
+		}
+		// If the user did not win.
+		if (!won) {
+			std::cout << "\n\nYOU DID NOT GUESS THE WORD CORRECTLY IN 7 TRIES\nTHE WORD WAS: " << randomWord;
+		}
+
+		// Quit sequence if the user wants to quit, then the while loop will break.
+		char quit;
+		std::cout << "\nDO YOU WANT TO QUIT? (Type 'q' if you want to): ";
+		cin >> quit;
+		cin.ignore(322, '\n');
+
+		if (quit == 'q') {
+			break;
+		}
+
+		
+	}
 	cout << "\n\n\n<PRESS ENTER>";
 	cin.clear();
 	cin.ignore(32767, '\n');
