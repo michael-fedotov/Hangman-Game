@@ -219,7 +219,7 @@ int main() {
 			userGuess += '/';
 		}
 
-		
+
 
 
 
@@ -232,6 +232,7 @@ int main() {
 		int guessCorrect = 0;
 		// Stores the user guess
 		char guessChar = '\0';
+		string guessCharString = "";
 		// Counts the number of attemps the user had made guessing, 7 is the max.
 		int triesCounter = 1;
 		// Boolean for if the user has won or not.
@@ -239,15 +240,41 @@ int main() {
 
 		int guess = 0;
 
-
-
+		// List containing characters already typed in by the user
+		vector<char>charGuessed;
+		charGuessed.push_back('\0');
 
 		// While loop for the only runs for 7 turns. (Turns start at 1), where the user plays the game and guesses all the letters
 		while (triesCounter < 8) {
+			// While loop for checking if the user entered a value that caused a cin.fail() or was not a char
+			guessChar = '\0';
+			// guessCharString = "";	
 			std::cout << "\nPlease enter your guess for a letter in the word: ";
-			std::cin >> guessChar;
-			cin.ignore(324, '\n');
+			cin >> guessChar;
+			guessChar = tolower(guessChar);
 
+
+			while (true) {
+
+				bool found = !(std::find(charGuessed.begin(), charGuessed.end(), guessChar) != charGuessed.end());
+				// std::cout << "\n" << found;
+				if (alphabet.find(guessChar) != std::string::npos && found) {
+					guessChar = tolower(guessChar);
+					// Adding the character guessed into the vector
+					charGuessed.push_back(guessChar);
+					break;
+				}
+				else {
+					guessChar = '\0';
+
+					std::cout << "\nERROR. Please enter a valid character that was not appeared previously: ";
+					cin >> guessChar;
+					guessChar = tolower(guessChar);
+
+				}
+			}
+
+			std::cout << "\n";
 			// Updating the guess and returning -1 if the user guessed incorrectly or 0 if the user guessed correctly.
 			guessCorrect = updateGuess(randomWord, userGuess, guessChar);
 
@@ -279,7 +306,6 @@ int main() {
 			break;
 		}
 
-		
 	}
 	cout << "\n\n\n<PRESS ENTER>";
 	cin.clear();
